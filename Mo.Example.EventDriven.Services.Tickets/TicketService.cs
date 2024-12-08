@@ -1,16 +1,16 @@
 using Mo.Example.EventDriven.Common;
+using Mo.Example.EventDriven.Common.Queue;
 using RabbitMQ.Client;
 
 namespace Mo.Example.EventDriven.Services.Tickets;
 
 public class TicketService(
     ILogger<TicketService> logger,
-    IMessageConsumer consumer, 
-    IMessagePublisher publisher) : BackgroundService
+    IMessageHandler messageHandler) : BackgroundService
 {
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        consumer.Consume<UserRequestTicketMessage>("UserRequestTicket", async message =>
+        messageHandler.Consume<UserRequestTicketMessage>(Queues.UserRequestTicket, async message =>
         {
             var ticketId = await CreateTicketAsync(message);
 
@@ -21,7 +21,7 @@ public class TicketService(
                 TicketId = ticketId,
             };
 
-            publisher.Publish("TicketCreated", ticketCreatedMessage);
+            messageHandler.Publish(Queues.TicketCreated, ticketCreatedMessage);
         });
 
         return Task.CompletedTask;

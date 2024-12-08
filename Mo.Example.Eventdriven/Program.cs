@@ -1,4 +1,5 @@
 using Mo.Example.EventDriven.Common;
+using Mo.Example.EventDriven.Common.Queue;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,9 +9,8 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddSingleton<RabbitMqConnectionManager>();
-builder.Services.AddSingleton<IMessagePublisher, RabbitMqPublisher>();
-builder.Services.AddSingleton<IMessageConsumer, RabbitMqConsumer>();
+builder.Services.AddSingleton<RabbitMQConnectionManager>();
+builder.Services.AddSingleton<IMessageHandler, RabbitMQManager>();
 
 var app = builder.Build();
 

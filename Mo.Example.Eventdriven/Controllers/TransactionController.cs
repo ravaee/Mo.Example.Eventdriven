@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Mo.Example.EventDriven.Common;
+using Mo.Example.EventDriven.Common.Queue;
 
 namespace Mo.Example.Eventdriven.Controllers;
 
 [ApiController]
 [Route("")]
 public class TransactionController(
-    IMessagePublisher publisher) : ControllerBase
+    IMessageHandler messageHandler) : ControllerBase
 {
     public string Index()
     {
@@ -26,7 +27,7 @@ public class TransactionController(
                 UserId = Guid.NewGuid().ToString(),
             };
 
-            publisher.Publish("UserRequestTicket", message);
+            messageHandler.Publish("UserRequestTicket", message);
 
             return Ok();
         }
